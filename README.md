@@ -3,3 +3,6 @@ When using this code, there are certain considerations you need to keep in mind.
 
 ## Updates from Version 1 to Version 2
 In Version 2, a cooldown has been added to prevent spam submissions.
+
+## Updates from version 2 to Version 3
+In version 3 there have been added: Glow Effects, Color Palette Genfinement, Typography Improvements, Box Shadow Enhancement, Consistent Styling, Sleeker Design, Improved User Interaction and Refined Heading style.
