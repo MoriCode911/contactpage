@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #282c35;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .contact-form {
+            max-width: 400px;
+            width: 100%;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #2e3341;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+            margin-top: 5px;
+            background-color: #414851;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            background-color: #57626e;
+        }
+
+        .form-group button {
+            background-color: #61dafb;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-group button:hover {
+            background-color: #4fa3d1;
+        }
+
+        #response-message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #cooldown-message {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contact-form">
+        <h2 style="text-align: center; color: #61dafb;">Contact Me</h2>
+        <form id="contact-form">
+            <div class="form-group">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="discord">Your Discord:</label>
+                <input type="text" id="discord" name="discord" required>
+            </div>
+            <div class="form-group">
+                <label for="reason">Reason for Contact:</label>
+                <textarea id="reason" name="reason" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" id="submitBtn">Submit</button>
+            </div>
+        </form>
+        <p id="response-message"></p>
+        <p id="cooldown-message"></p>
+    </div>
+
+    <script>
+        let formCooldown = false;
+
+        document.getElementById('contact-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (formCooldown) {
+                displayCooldownMessage();
+                return;
+            }
+
+            const name = document.getElementById('name').value;
+            const discord = document.getElementById('discord').value;
+            const reason = document.getElementById('reason').value;
+
+            const embed = {
+                title: 'New Contact Form Submission',
+                color: 0x61dafb,
+                fields: [
+                    { name: 'Name', value: name },
+                    { name: 'Discord', value: discord },
+                    { name: 'Reason', value: reason },
+                ],
+            };
+//Change "YOUR WEBHOOK URL" to your webhooks url
+            fetch('[YOUR WEBHOOK URL]', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    embeds: [embed],
+                }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        document.getElementById('response-message').innerText = 'Form submitted successfully!';
+                        formCooldown = true;
+
+                        // Set a timeout to reset the cooldown after 10 minutes
+                        setTimeout(() => {
+                            formCooldown = false;
+                            document.getElementById('response-message').innerText = '';
+                            document.getElementById('cooldown-message').innerText = '';
+                        }, 600000); // 10 minutes in milliseconds
+
+                        // Display cooldown message
+                        displayCooldownMessage();
+                    } else {
+                        document.getElementById('response-message').innerText = 'Error submitting form.';
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    document.getElementById('response-message').innerText = 'An error occurred.';
+                });
+        });
+
+        function displayCooldownMessage() {
+            const cooldownMessageElement = document.getElementById('cooldown-message');
+
+            let cooldownTimeLeft = 600; // 10 minutes in seconds
+            setInterval(() => {
+                const minutes = Math.floor(cooldownTimeLeft / 60);
+                const seconds = cooldownTimeLeft % 60;
+                cooldownMessageElement.innerText = `Cooldown: ${minutes} minutes and ${seconds} seconds left`;
+                cooldownTimeLeft--;
+
+                if (cooldownTimeLeft < 0) {
+                    cooldownMessageElement.innerText = '';
+                }
+            }, 1000);
+        }
+    </script>
+
+</body>
+
+</html>
