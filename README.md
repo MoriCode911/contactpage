@@ -1,6 +1,5 @@
-# Make sure
-there is some stuff you need to make sure when using this code, one of them is to make sure you follow the license when using it, the "Contact page" use the GPL-3.0 license. You can read more about the GPL-3.0 license on the license file
+# Important Note
+When using this code, there are certain considerations you need to keep in mind. One of them is ensuring that you comply with the license terms when using it. The "Contact page" is licensed under GPL-3.0. Please refer to the license file for more details on the GPL-3.0 license.
 
-
-## Updates from version 1 to version 2
-in the version 2 i have added a cooldown to prevent spam submit.
+## Updates from Version 1 to Version 2
+In Version 2, a cooldown has been added to prevent spam submissions.
