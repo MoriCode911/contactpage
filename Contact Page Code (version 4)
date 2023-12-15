@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(90deg, #141e30, #243b55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .contact-form {
+            max-width: 400px;
+            width: 100%;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #1d2c4c, #293b5e);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1), 0 0 40px rgba(97, 218, 251, 0.3);
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        h2 {
+            color: #61dafb;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #61dafb;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+            margin-top: 5px;
+            background: linear-gradient(90deg, #1d2c4c, #293b5e);
+            color: #fff;
+            transition: background 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 10px rgba(97, 218, 251, 0.3);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            background: linear-gradient(90deg, #1d2c4c, #364c6f);
+            box-shadow: 0 0 20px rgba(97, 218, 251, 0.5);
+        }
+
+        .form-group button {
+            background: linear-gradient(90deg, #2b75af, #3e97d3);
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 10px rgba(97, 218, 251, 0.3);
+            display: inline-block;
+        }
+
+        .form-group button:hover {
+            background: linear-gradient(90deg, #266590, #3479a8);
+            box-shadow: 0 0 20px rgba(97, 218, 251, 0.5);
+        }
+
+        #response-message,
+        #cooldown-message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #61dafb;
+        }
+
+        #cooldown-message {
+            color: red;
+        }
+
+        .made-by {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #61dafb;
+            animation: flicker 1s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contact-form">
+        <h2>Contact Me</h2>
+        <form id="contact-form">
+            <div class="form-group">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="discord">Your Discord:</label>
+                <input type="text" id="discord" name="discord" required>
+            </div>
+            <div class="form-group">
+                <label for="reason">Reason for Contact:</label>
+                <textarea id="reason" name="reason" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" id="submitBtn">Submit</button>
+            </div>
+        </form>
+        <p id="response-message"></p>
+        <p id="cooldown-message"></p>
+        <div class="made-by">Made by MoriCode911 on GitHub</div>
+    </div>
+
+    <script>
+                        let formCooldown = false;
+
+        document.getElementById('contact-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (formCooldown) {
+                displayCooldownMessage();
+                return;
+            }
+
+            const name = document.getElementById('name').value;
+            const discord = document.getElementById('discord').value;
+            const reason = document.getElementById('reason').value;
+
+            const embed = {
+                title: 'New Contact Form Submission',
+                color: 0x61dafb,
+                fields: [
+                    { name: 'Name', value: name },
+                    { name: 'Discord', value: discord },
+                    { name: 'Reason', value: reason },
+                ],
+            };
+//Change "YOUR WEBHOOK URL" to your webhooks url
+            fetch('[YOUR WEBHOOK URL]', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    embeds: [embed],
+                }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        document.getElementById('response-message').innerText = 'Form submitted successfully!';
+                        formCooldown = true;
+
+                        // Set a timeout to reset the cooldown after 10 minutes
+                        setTimeout(() => {
+                            formCooldown = false;
+                            document.getElementById('response-message').innerText = '';
+                            document.getElementById('cooldown-message').innerText = '';
+                        }, 600000); // 10 minutes in milliseconds
+
+                        // Display cooldown message
+                        displayCooldownMessage();
+                    } else {
+                        document.getElementById('response-message').innerText = 'Error submitting form.';
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    document.getElementById('response-message').innerText = 'An error occurred.';
+                });
+        });
+
+        function displayCooldownMessage() {
+            const cooldownMessageElement = document.getElementById('cooldown-message');
+
+            let cooldownTimeLeft = 600; // 10 minutes in seconds
+            setInterval(() => {
+                const minutes = Math.floor(cooldownTimeLeft / 60);
+                const seconds = cooldownTimeLeft % 60;
+                cooldownMessageElement.innerText = `Cooldown: ${minutes} minutes and ${seconds} seconds left`;
+                cooldownTimeLeft--;
+
+                if (cooldownTimeLeft < 0) {
+                    cooldownMessageElement.innerText = '';
+                }
+            }, 1000);
+        }
+
+    </script>
+</body>
+
+</html>
