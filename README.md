@@ -6,3 +6,6 @@ In Version 2, a cooldown has been added to prevent spam submissions.
 
 ## Updates from version 2 to Version 3
 In version 3 there have been added: Glow Effects, Color Palette Genfinement, Typography Improvements, Box Shadow Enhancement, Consistent Styling, Sleeker Design, Improved User Interaction and Refined Heading style.
+
+## Updates from version 3 to Version 4
+In version 4, almost everything has been changed except for the JavaScript. The submit button is now centered, and the background has been updated to a more futuristic and lighter theme with a prominent blue color compared to the darker grey color in the previous versions of the contact page. Additionally, a small text has been added below the submit button, stating "Made by MoriCode911 on GitHub," making it easier for users of version 4 to adhere to the GPL-3.0 license regarding source code disclosure.
